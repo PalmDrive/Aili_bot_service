@@ -1,0 +1,21 @@
+{
+  "name": "aili_bot_service",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "deepcopy": "^0.6.3",
+    "express": "^4.14.0",
+    "express-ws": "^2.0.0",
+    "leancloud-storage": "^1.5.2",
+    "morgan": "^1.7.0",
+    "node-uuid": "^1.4.7",
+    "underscore": "^1.8.3"
+  }
+}
