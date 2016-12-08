@@ -81,6 +81,8 @@ apiRouter.post(
   xmlParser({trim: false, explicitArray: false}),
   wechatMessagesCtrl.post
 );
+// For Wechat api endpoint verification
+apiRouter.get('/wechat/:clientId/messages', wechatMessagesCtrl.get);
 
 app.use('/api', apiRouter);
 
