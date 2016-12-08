@@ -9,7 +9,7 @@ npm-debug.log
 
 
 config/database.json
-config/development.json
+config/develop.json
 config/test.json
 config/staging.json
 config/production.json
