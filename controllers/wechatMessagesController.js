@@ -26,7 +26,7 @@ const onSubscribe = (data, chatbot, user) => {
 
         console.log('sending message');
 
-        chatbot.sendWechatMessage(chatbot.getResDataFromScriptedRes(response, touser));
+        chatbot.sendWechatMessage(chatbot._getResDataFromScriptedRes(response, touser));
       } else {
         console.log('not corresponding response found');
       }
@@ -75,7 +75,7 @@ module.exports.post = (req, res, next) => {
         });
     })
     .then(user => {
-      console.log(`At ${bot.getTime()} get user ${userId} data from leancloud.`);
+      console.log(`At ${bot._getTime()} get user ${userId} data from leancloud.`);
 
       if (data.msgtype === 'text') {
         // Intent to action
@@ -107,9 +107,8 @@ module.exports.post = (req, res, next) => {
           onSubscribe(data, bot, user);
         }
       }
-    }, err => {
-      console.log('err:', err);
-    });
+    })
+    .catch(err => console.log('Caught err:', err.stack));
 };
 
 module.exports.get = (req, res, next) => {
