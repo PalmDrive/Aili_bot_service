@@ -79,13 +79,8 @@ module.exports.post = (req, res, next) => {
 
       if (data.msgtype === 'text') {
         // Intent to action
-        if (data.content === '回复临时素材') {
-          return onGetTask(data, accessToken);
-        } else if (data.content === '回复永久素材') {
-          // Test 2: send voice
-          return onGetTask(data, accessToken, 'test');
-        } else if (data.content === 'reset') {
-          return onSubscribe(data, accessToken, user);
+        if (data.content === 'reset') {
+          return onSubscribe(data, user);
         } else if (
           data.content.match(/推荐/) ||
           data.content.match(/来吧/) ||
@@ -96,19 +91,19 @@ module.exports.post = (req, res, next) => {
           return bot.onRecommend(data, user);
         }
 
-        if (context.nextScriptedResUid) {
+        if (user.get('context') && user.get('context').nextScriptedResUid) {
           return bot.onReceiveAnsForScriptedRes(data, user);
         }
 
         // Default response
-        //return sendDefaultResponse(data, accessToken);
+        return bot.sendDefaultResponse(data);
       } else if (data.msgtype === 'event') {
         if (data.event === 'subscribe') {
           onSubscribe(data, bot, user);
         }
       }
     })
-    .catch(err => console.log('Caught err:', err.stack));
+    .catch(err => console.log('Caught err:', err.stack || err));
 };
 
 module.exports.get = (req, res, next) => {
