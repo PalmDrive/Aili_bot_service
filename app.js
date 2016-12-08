@@ -4,23 +4,29 @@ const express = require('express'),
       path = require('path'),
       logger = require('morgan'),
       bodyParser = require('body-parser'),
+      xmlParser = require('express-xml-bodyparser'),
       cors = require('cors'),
       leanCloud = require('./lib/lean_cloud');
 
 // Set the app root path
 global.APP_ROOT = path.resolve(__dirname);
-global.APP_ENV = process.env.NODE_ENV || 'development';
+global.APP_ENV = process.env.NODE_ENV || 'develop';
 
 const Errors = require('./lib/errors'),
       BadRequestError = require('./lib/errors/BadRequestError'),
       NotFoundError = require('./lib/errors/NotFoundError'),
       UnauthorizedError = require('./lib/errors/UnauthorizedError');
 
-const config = require(`./config/${global.APP_ENV}.json`),
-    app = express(),
+const app = express(),
     apiRouter = express.Router(),
     expressWs = require('express-ws')(app);
 
+const _hasXMLInRequest = (req) => {
+  const str = req.headers['content-type'] || '',
+        regexp = /^(text\/xml|application\/([\w!#\$%&\*`\-\.\^~]+\+)?xml)$/i;
+
+  return regexp.test(str.split(';')[0]);
+}
 
 app.use(logger('dev'));
 
@@ -61,13 +67,20 @@ app.use((req, res, next) => {
 });
 
 // Messages controller
-const messagesCtrl = require('./controllers/messagesController');
-      //usersCtrl = require('./controllers/usersController');
+const messagesCtrl = require('./controllers/messagesController'),
+      wechatMessagesCtrl = require('./controllers/wechatMessagesController');
 
 apiRouter.ws('/messages', messagesCtrl.socket);
 apiRouter.get('/messages', messagesCtrl.get);
 // apiRouter.post('/users/login', usersCtrl.login);
 // apiRouter.post('/users', usersCtrl.signup);
+
+// Wechat messages controller
+apiRouter.post(
+  '/wechat/:clientId/messages',
+  xmlParser({trim: false, explicitArray: false}),
+  wechatMessagesCtrl.post
+);
 
 app.use('/api', apiRouter);
 
