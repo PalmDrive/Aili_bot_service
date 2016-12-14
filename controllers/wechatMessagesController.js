@@ -80,7 +80,7 @@ module.exports.post = (req, res, next) => {
       if (data.msgtype === 'text') {
         // Intent to action
         if (data.content === 'reset') {
-          return onSubscribe(data, user);
+          return onSubscribe(data, bot, user);
         } else if (
           data.content.match(/推荐/) ||
           data.content.match(/来吧/) ||
