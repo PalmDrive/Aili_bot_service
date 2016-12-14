@@ -119,4 +119,9 @@ app.use(function(err, req, res, next) {
   });
 });
 
+// Start worker
+const Flipboard = require('./lib/flipboard'),
+      fp = new Flipboard();
+fp.initWorker();
+
 module.exports = app;
