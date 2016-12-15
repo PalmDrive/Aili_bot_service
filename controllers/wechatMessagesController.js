@@ -54,7 +54,7 @@ module.exports.post = (req, res, next) => {
   // Reply success to avoid error and repeated request
   res.send('success');
 
-  const bot = new Chatbot(req.params.clientId, 'WECHAT');
+  const bot = new Chatbot(req.client, 'WECHAT');
 
   const data = req.body.xml,
         userId = data.fromusername;

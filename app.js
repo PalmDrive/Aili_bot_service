@@ -77,7 +77,20 @@ apiRouter.get('/messages', messagesCtrl.get);
 
 // Wechat messages controller
 apiRouter.post(
-  '/wechat/:clientId/messages',
+  '/wechat/:clientId/messages', (req, res, next) => {
+    const query = new leanCloud.AV.Query('Client'),
+          errMsg = `Client with id ${req.params.clientId} not found`;
+    query.get(req.params.clientId)
+      .then(client => {
+        if (client) {
+          req.client = client;
+          next();
+        } else {
+          next(new NotFoundError('404', {message: errMsg}));
+        }
+      })
+      .catch(err => next(new BadRequestError('400', {message: err.message})));
+  },
   xmlParser({trim: false, explicitArray: false}),
   wechatMessagesCtrl.post
 );
@@ -88,7 +101,7 @@ app.use('/api', apiRouter);
 
 // error handler for all the application
 app.use(function(err, req, res, next) {
-  console.log("Catching error: ", err);
+  console.log("Catching error: ", err.stack || err);
 
   let code = 400,
       msg = { message: 'Internal Server Error' },
@@ -111,8 +124,7 @@ app.use(function(err, req, res, next) {
     errors = err.inner.errors;
   }
 
-  console.log('error message: ');
-  console.log(errors[0].message);
+  console.log('error message: ', errors[0].message);
 
   return res.status(code).json({
     errors: errors
@@ -123,5 +135,16 @@ app.use(function(err, req, res, next) {
 const Flipboard = require('./lib/flipboard'),
       fp = new Flipboard();
 fp.initWorker();
+
+// const mediaQuery = new leanCloud.AV.Query('Media'),
+//       bosonnlp = require('./lib/bosonnlp');
+// mediaQuery.equalTo('source', 'Flipboard');
+// mediaQuery.doesNotExist('summary');
+// mediaQuery.equalTo('type', 'article');
+
+// mediaQuery.find()
+//   .then(medium => Flipboard.setMediaSummaryAndKeywords(medium))
+//   .then(medium => leanCloud.AV.Object.saveAll(medium))
+//   .catch(err => console.error('err:', err.stack || err));
 
 module.exports = app;
