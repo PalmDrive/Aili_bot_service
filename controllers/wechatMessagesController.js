@@ -85,8 +85,8 @@ module.exports.post = (req, res, next) => {
           data.content.match(/推荐/) ||
           data.content.match(/来吧/) ||
           data.content.match(/继续/) ||
-          data.content.match(/喜欢/) ||
-          data.content.match(/一般/)
+          data.content.match(/下一条/) ||
+          data.content.match(/下一个/)
         ) {
           return bot.onRecommend(data, user);
         }
