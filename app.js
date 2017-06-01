@@ -71,7 +71,7 @@ const messagesCtrl = require('./controllers/messagesController'),
       wechatMessagesCtrl = require('./controllers/wechatMessagesController');
 
 apiRouter.ws('/messages', messagesCtrl.socket);
-apiRouter.get('/messages', messagesCtrl.get);
+apiRouter.get('/messages', wechatMessagesCtrl.get);
 // apiRouter.post('/users/login', usersCtrl.login);
 // apiRouter.post('/users', usersCtrl.signup);
 
